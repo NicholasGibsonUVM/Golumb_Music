@@ -1,0 +1,16 @@
+.box {
+    display: inline-block;
+    margin: 2px;
+    height: 20px;
+    width: 20px;
+    border: 1px solid black;
+}
+
+#golumn-grid {
+    text-align: center;
+}
+
+#counter-inner {
+    margin: 0 auto;
+    width: fit-content;
+}
