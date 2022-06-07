@@ -28,6 +28,25 @@ class GridContainer extends React.Component {
           };
         } else {
           grid[i][j] = { clickable: canClick, bgColor: "white" };
+          for (let k = 0; k < this.state.activeArray.length; k++) {
+            let distance = {
+              y: this.state.activeArray[k].y - i,
+              x: this.state.activeArray[k].x - j,
+            };
+            if (
+              this.state.distanceArray.findIndex((dist) => {
+                return (
+                  (dist.x == distance.x && dist.y == distance.y) ||
+                  (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
+                );
+              }) != -1 ||
+              this.state.activeArray.findIndex((pos) => {
+                return pos.y == i || pos.x == j;
+              }) != -1
+            ) {
+              grid[i][j] = { clickable: false, bgColor: "red" };
+            }
+          }
         }
       }
     }
@@ -37,21 +56,21 @@ class GridContainer extends React.Component {
   changeColor = (row, col) => {
     this.setState((prevState) => {
       const grid = prevState.gamegrid.map((el, i) => {
-          return el.map((square, j) => {
-            if (j == col && i == row) {
-              const newSquare = {
-                clickable: square.clickable,
-                bgColor: square.bgColor == "white" ? "green" : "white",
-              };
-              return newSquare;
-            } else {
-              const newSquare = {
-                clickable: true,
-                bgColor: square.bgColor == "red" ? "white" : square.bgColor,
-              }
-              return newSquare;
-            }
-          });
+        return el.map((square, j) => {
+          if (j == col && i == row) {
+            const newSquare = {
+              clickable: square.clickable,
+              bgColor: square.bgColor == "white" ? "green" : "white",
+            };
+            return newSquare;
+          } else {
+            const newSquare = {
+              clickable: true,
+              bgColor: square.bgColor == "red" ? "white" : square.bgColor,
+            };
+            return newSquare;
+          }
+        });
       });
 
       let active = [...prevState.activeArray];
@@ -132,7 +151,8 @@ class GridContainer extends React.Component {
                     (dist.x == distance.x && dist.y == distance.y) ||
                     (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
                   );
-                }) != -1 || active.findIndex((pos) => {
+                }) != -1 ||
+                active.findIndex((pos) => {
                   return pos.y == i || pos.x == j;
                 }) != -1
               ) {
@@ -182,8 +202,8 @@ class GridContainer extends React.Component {
           gamegrid={this.state.gamegrid}
           changeColor={this.changeColor}
         />
-        <PlayButton 
-          activeNotes={this.state.activeArray.sort((a,b) => a.x - b.x)}
+        <PlayButton
+          activeNotes={this.state.activeArray.sort((a, b) => a.x - b.x)}
           range={this.state.height}
         />
       </div>
