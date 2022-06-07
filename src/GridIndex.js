@@ -41,13 +41,13 @@ class GridContainer extends React.Component {
             if (j == col && i == row) {
               const newSquare = {
                 clickable: square.clickable,
-                bgColor: square.bgColor == "white" ? "red" : "white",
+                bgColor: square.bgColor == "white" ? "green" : "white",
               };
               return newSquare;
             } else {
               const newSquare = {
                 clickable: true,
-                bgColor: square.bgColor == "green" ? "white" : square.bgColor,
+                bgColor: square.bgColor == "red" ? "white" : square.bgColor,
               }
               return newSquare;
             }
@@ -84,7 +84,7 @@ class GridContainer extends React.Component {
           }
         }
         //Add to active and distances
-      } else if (grid[row][col].bgColor === "red") {
+      } else if (grid[row][col].bgColor === "green") {
         //Add Active
         let index = active.findIndex((pos) => {
           return pos.y == row && pos.x == col;
@@ -134,7 +134,7 @@ class GridContainer extends React.Component {
                   );
                 }) != -1
               ) {
-                grid[i][j] = { clickable: false, bgColor: "green" };
+                grid[i][j] = { clickable: false, bgColor: "red" };
               }
             }
           }
