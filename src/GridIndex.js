@@ -37,21 +37,21 @@ class GridContainer extends React.Component {
   changeColor = (row, col) => {
     this.setState((prevState) => {
       const grid = prevState.gamegrid.map((el, i) => {
-        if (i == row) {
           return el.map((square, j) => {
-            if (j == col) {
+            if (j == col && i == row) {
               const newSquare = {
                 clickable: square.clickable,
                 bgColor: square.bgColor == "white" ? "red" : "white",
               };
               return newSquare;
             } else {
-              return square;
+              const newSquare = {
+                clickable: true,
+                bgColor: square.bgColor == "green" ? "white" : square.bgColor,
+              }
+              return newSquare;
             }
           });
-        } else {
-          return el;
-        }
       });
 
       let active = [...prevState.activeArray];
@@ -134,9 +134,7 @@ class GridContainer extends React.Component {
                   );
                 }) != -1
               ) {
-                console.log(distance);
                 grid[i][j] = { clickable: false, bgColor: "green" };
-                console.log(grid[i][j]);
               }
             }
           }
