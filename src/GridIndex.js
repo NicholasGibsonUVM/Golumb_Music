@@ -20,13 +20,14 @@ class GridContainer extends React.Component {
     for (let i = 0; i < grid.length; i++) grid[i] = new Array(width);
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
+        let canClick = true;
         if (i < this.state.height && j < this.state.width) {
           grid[i][j] = {
             clickable: this.state.gamegrid[i][j].clickable,
             bgColor: this.state.gamegrid[i][j].bgColor,
           };
         } else {
-          grid[i][j] = { clickable: true, bgColor: "white" };
+          grid[i][j] = { clickable: canClick, bgColor: "white" };
         }
       }
     }
@@ -106,6 +107,37 @@ class GridContainer extends React.Component {
             });
             if (disIndex == -1) {
               distances.push(distance);
+            }
+          }
+        }
+      }
+
+      //Mark the unclickable tiles
+      for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+          if (
+            active.findIndex((pos) => {
+              return pos.y == i && pos.x == j;
+            }) == -1
+          ) {
+            for (let k = 0; k < active.length; k++) {
+              let distance = {
+                y: active[k].y - i,
+                x: active[k].x - j,
+              };
+
+              if (
+                distances.findIndex((dist) => {
+                  return (
+                    (dist.x == distance.x && dist.y == distance.y) ||
+                    (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
+                  );
+                }) != -1
+              ) {
+                console.log(distance);
+                grid[i][j] = { clickable: false, bgColor: "green" };
+                console.log(grid[i][j]);
+              }
             }
           }
         }
