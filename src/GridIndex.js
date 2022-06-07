@@ -132,6 +132,8 @@ class GridContainer extends React.Component {
                     (dist.x == distance.x && dist.y == distance.y) ||
                     (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
                   );
+                }) != -1 || active.findIndex((pos) => {
+                  return pos.y == i || pos.x == j;
                 }) != -1
               ) {
                 grid[i][j] = { clickable: false, bgColor: "red" };
@@ -160,18 +162,8 @@ class GridContainer extends React.Component {
     this.setState((prevState) => {
       return {
         height: verified,
-        gamegrid: this.makeGrid(verified, prevState.width),
-      };
-    });
-  };
-
-  changeWidth = (num) => {
-    var verified = this.verifyBounds(num);
-
-    this.setState((prevState) => {
-      return {
         width: verified,
-        gamegrid: this.makeGrid(prevState.height, verified),
+        gamegrid: this.makeGrid(verified, verified),
       };
     });
   };
@@ -182,18 +174,17 @@ class GridContainer extends React.Component {
         <InputButton
           change={this.changeHeight}
           num={this.state.height}
-          type="Height"
-        />
-        <InputButton
-          change={this.changeWidth}
-          num={this.state.width}
-          type="Width"
+          type="Size"
         />
         <Grid
           height={this.state.height}
           width={this.state.width}
           gamegrid={this.state.gamegrid}
           changeColor={this.changeColor}
+        />
+        <PlayButton 
+          activeNotes={this.state.activeArray.sort((a,b) => a.x - b.x)}
+          range={this.state.height}
         />
       </div>
     );

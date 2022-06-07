@@ -15,5 +15,6 @@
 <script src="../src/Grid/Square.js" type = "text/babel"></script>
 <script src="../src/Grid/Grid.js" type = "text/babel"></script>
 <script src="../src/Grid/InputButton.js" type = "text/babel"></script>
+<script src="../src/Grid/PlayButton.js" type = "text/babel"></script>
 <script src="../src/GridIndex.js" type = "text/babel"></script>
 <?php include "foot.php";?>
