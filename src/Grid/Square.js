@@ -4,7 +4,9 @@ class Square extends React.Component {
   }
 
   squareClick = (e) => {
-    this.props.changeColor(this.props.row, this.props.col);
+    if (this.props.clickable) {
+      this.props.changeColor(this.props.row, this.props.col);
+    }
   };
 
   render() {
