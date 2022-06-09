@@ -15,156 +15,70 @@ class GridContainer extends React.Component {
     };
   }
 
-  makeGrid = (height, width) => {
-    const grid = new Array(height);
-    for (let i = 0; i < grid.length; i++) grid[i] = new Array(width);
-    for (let i = 0; i < grid.length; i++) {
-      for (let j = 0; j < grid[i].length; j++) {
-        let canClick = true;
-        if (i < this.state.height && j < this.state.width) {
-          grid[i][j] = {
-            clickable: this.state.gamegrid[i][j].clickable,
-            bgColor: this.state.gamegrid[i][j].bgColor,
-          };
-        } else {
-          grid[i][j] = { clickable: canClick, bgColor: "white" };
-          for (let k = 0; k < this.state.activeArray.length; k++) {
-            let distance = {
-              y: this.state.activeArray[k].y - i,
-              x: this.state.activeArray[k].x - j,
-            };
-            if (
-              this.state.distanceArray.findIndex((dist) => {
-                return (
-                  (dist.x == distance.x && dist.y == distance.y) ||
-                  (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
-                );
-              }) != -1 ||
-              this.state.activeArray.findIndex((pos) => {
-                return pos.y == i || pos.x == j;
-              }) != -1
-            ) {
-              grid[i][j] = { clickable: false, bgColor: "red" };
-            }
-          }
-        }
-      }
-    }
-    return grid;
-  };
-
   changeColor = (row, col) => {
     this.setState((prevState) => {
-      const grid = prevState.gamegrid.map((el, i) => {
-        return el.map((square, j) => {
-          if (j == col && i == row) {
-            const newSquare = {
-              clickable: square.clickable,
-              bgColor: square.bgColor == "white" ? "green" : "white",
-            };
-            return newSquare;
-          } else {
-            const newSquare = {
-              clickable: true,
-              bgColor: square.bgColor == "red" ? "white" : square.bgColor,
-            };
-            return newSquare;
-          }
-        });
-      });
-
-      let active = [...prevState.activeArray];
-      let distances = [...prevState.distanceArray];
-      //Remove From active and distances
-      if (grid[row][col].bgColor === "white") {
-        //Remove Active
-        let index = active.findIndex((pos) => {
-          return pos.y == row && pos.x == col;
-        });
-        if (index != -1) {
-          active.splice(index, 1);
-        }
-        //Remove Distances
-        for (let i = 0; i < prevState.activeArray.length; i++) {
-          let distance = {
-            y: prevState.activeArray[i].y - row,
-            x: prevState.activeArray[i].x - col,
-          };
-          if (!(distance.x == 0 && distance.y == 0)) {
-            let disIndex = distances.findIndex((dist) => {
-              return (
-                (dist.x == distance.x && dist.y == distance.y) ||
-                (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
-              );
+      //Rebuild Active Array
+      let active =
+        prevState.gamegrid[row][col].bgColor == "green"
+          ? prevState.activeArray.filter((pos) => {
+              return row != pos.y || col != pos.x;
+            })
+          : [...prevState.activeArray, { y: row, x: col }];
+      
+      let distances = [];
+      for (let i = 0; i < active.length; i++) {
+        for (let j = 0; j < active.length; j++) {
+          if (i != j) {
+            distances.push({
+              y: active[i].y - active[j].y,
+              x: active[i].x - active[j].x,
             });
-            if (disIndex != -1) {
-              distances.splice(disIndex, 1);
-            }
-          }
-        }
-        //Add to active and distances
-      } else if (grid[row][col].bgColor === "green") {
-        //Add Active
-        let index = active.findIndex((pos) => {
-          return pos.y == row && pos.x == col;
-        });
-        if (index == -1) {
-          active.push({ y: row, x: col });
-        }
-        //Add Distances
-        for (let i = 0; i < prevState.activeArray.length; i++) {
-          let distance = {
-            y: prevState.activeArray[i].y - row,
-            x: prevState.activeArray[i].x - col,
-          };
-          if (!(distance.x == 0 && distance.y == 0)) {
-            let disIndex = distances.findIndex((dist) => {
-              return (
-                (dist.x == distance.x && dist.y == distance.y) ||
-                (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
-              );
-            });
-            if (disIndex == -1) {
-              distances.push(distance);
-            }
           }
         }
       }
-
-      //Mark the unclickable tiles
-      for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[i].length; j++) {
+      const newGrid = prevState.gamegrid.map((row, y) => {
+        return row.map((square, x) => {
+          //Check if its an active cell
           if (
             active.findIndex((pos) => {
-              return pos.y == i && pos.x == j;
-            }) == -1
+              return pos.x == x && pos.y == y;
+            }) != -1
           ) {
+            return { clickable: true, bgColor: "green" };
+          }
+
+          //Check if its an unclickable cell
+          if (
+            active.findIndex((pos) => {
+              return pos.y == y || pos.x == x;
+            }) != -1
+          ) {
+            return { clickable: false, bgColor: "red" };
+          } else {
             for (let k = 0; k < active.length; k++) {
               let distance = {
-                y: active[k].y - i,
-                x: active[k].x - j,
+                y: active[k].y - y,
+                x: active[k].x - x,
               };
-
               if (
                 distances.findIndex((dist) => {
                   return (
                     (dist.x == distance.x && dist.y == distance.y) ||
                     (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
                   );
-                }) != -1 ||
-                active.findIndex((pos) => {
-                  return pos.y == i || pos.x == j;
                 }) != -1
               ) {
-                grid[i][j] = { clickable: false, bgColor: "red" };
+                return { clickable: false, bgColor: "red" };
               }
             }
           }
-        }
-      }
+
+          return { clickable: true, bgColor: "white" };
+        });
+      });
 
       //Set the State
-      return { gamegrid: grid, activeArray: active, distanceArray: distances };
+      return { gamegrid: newGrid, activeArray: active, distanceArray: distances };
     });
   };
 
@@ -176,14 +90,78 @@ class GridContainer extends React.Component {
     return verified;
   };
 
-  changeHeight = (num) => {
-    var verified = this.verifyBounds(num);
-
+  changeSize = (num) => {
     this.setState((prevState) => {
+      const verified = this.verifyBounds(num);
+
+      const active = prevState.activeArray.filter((activeSquare) => {
+        return activeSquare.x < num && activeSquare.y < num;
+      });
+
+      let distances = [];
+      for (let i = 0; i < active.length; i++) {
+        for (let j = 0; j < active.length; j++) {
+          if (i != j) {
+            distances.push({
+              y: active[i].y - active[j].y,
+              x: active[i].x - active[j].x,
+            });
+          }
+        }
+      }
+
+      const grid = new Array(verified);
+      for (let i = 0; i < grid.length; i++) grid[i] = new Array(verified);
+      //Each Array element needs to be defined or map will skip over them
+      for (let i = 0; i < grid.length; i++) grid[i].fill(1);
+
+      const newGrid = grid.map((row, y) => {
+        return row.map((square, x) => {
+          //Check if its an active cell
+          if (
+            active.findIndex((pos) => {
+              return pos.x == x && pos.y == y;
+            }) != -1
+          ) {
+            return { clickable: true, bgColor: "green" };
+          }
+
+          //Check if its an unclickable cell
+          if (
+            active.findIndex((pos) => {
+              return pos.y == y || pos.x == x;
+            }) != -1
+          ) {
+            return { clickable: false, bgColor: "red" };
+          } else {
+            for (let k = 0; k < active.length; k++) {
+              let distance = {
+                y: active[k].y - y,
+                x: active[k].x - x,
+              };
+              if (
+                distances.findIndex((dist) => {
+                  return (
+                    (dist.x == distance.x && dist.y == distance.y) ||
+                    (dist.x == -1 * distance.x && dist.y == -1 * distance.y)
+                  );
+                }) != -1
+              ) {
+                return { clickable: false, bgColor: "red" };
+              }
+            }
+          }
+
+          return { clickable: true, bgColor: "white" };
+        });
+      });
+
       return {
         height: verified,
         width: verified,
-        gamegrid: this.makeGrid(verified, verified),
+        gamegrid: newGrid,
+        activeArray: active,
+        distanceArray: distances,
       };
     });
   };
@@ -192,7 +170,7 @@ class GridContainer extends React.Component {
     return (
       <div>
         <InputButton
-          change={this.changeHeight}
+          change={this.changeSize}
           num={this.state.height}
           type="Size"
         />

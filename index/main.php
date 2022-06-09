@@ -3,11 +3,6 @@
     <div class="jumbotron">
         <h1 class="display-3">Golumb Music</h1>
         <p class="lead">A mathematical way to generate pattern free music</p>
-        <hr class="my-2">
-        <p>Something about pattern free music</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="Jumbo action link" role="button">Maybe An Action?</a>
-        </p>
     </div>
     <!-- React file is inserted here to generate golumb grid -->
     <div id="golumn-grid"></div>
