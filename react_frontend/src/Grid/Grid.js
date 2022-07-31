@@ -1,8 +1,7 @@
-class Grid extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import React, { Component } from "react";
+import Square from "./Square";
 
+class Grid extends Component {
   render() {
     return (
       <div>
@@ -19,3 +18,5 @@ class Grid extends React.Component {
     );
   }
 }
+
+export default Grid;

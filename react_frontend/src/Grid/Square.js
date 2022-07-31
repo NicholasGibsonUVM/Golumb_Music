@@ -1,8 +1,6 @@
-class Square extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import React, { Component } from "react";
 
+class Square extends Component {
   squareClick = (e) => {
     if (this.props.clickable) {
       this.props.changeColor(this.props.row, this.props.col);
@@ -19,3 +17,5 @@ class Square extends React.Component {
     );
   }
 }
+
+export default Square;

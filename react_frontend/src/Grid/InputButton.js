@@ -1,4 +1,6 @@
-class InputButton extends React.Component {
+import React, { Component } from "react";
+
+class InputButton extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
@@ -52,3 +54,5 @@ class InputButton extends React.Component {
     );
   }
 }
+
+export default InputButton;
