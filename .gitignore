@@ -2,6 +2,7 @@
 /client/node_modules
 /client/.pnp
 /client/.pnp.js
+/php_backend/inc/config.php
 
 # testing
 /client/coverage

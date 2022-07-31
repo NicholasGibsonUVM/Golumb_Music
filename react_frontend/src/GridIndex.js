@@ -155,6 +155,7 @@ class GridContainer extends Component {
         <PlayButton
           activeNotes={this.state.activeArray.sort((a, b) => a.x - b.x)}
           range={this.state.height}
+          length={this.state.width}
         />
       </div>
     );

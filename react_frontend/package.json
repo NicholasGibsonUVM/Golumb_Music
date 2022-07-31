@@ -1,5 +1,6 @@
 {
-  "name": "client",
+  "name": "Golomb_Music",
+  "homepage": "https://nsgibson.w3.uvm.edu/Golomb_Music",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
