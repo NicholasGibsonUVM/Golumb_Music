@@ -1,7 +1,8 @@
 import React from "react";
 import "./App.css";
 import GridIndex from "./GridIndex";
-import { useState, useEffect } from "react";
+import Login from "./Login/Login";
+import { useState } from "react";
 
 function App() {
   const [grids, setGrids] = useState([]);
@@ -9,24 +10,37 @@ function App() {
   const [JWT, setJWT] = useState("");
   const [userList, setUserList] = useState([]);
 
-  const login = (username, password) => {
+  const logout = () => {
+    setJWT("");
+  };
+
+  const login = (username, password, e) => {
     fetch("/user/login", {
-      username: username,
-      password: password,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
     })
       .then((response) => response.json())
       .then((result) => setJWT(result.jwt))
       .catch((error) => console.log("Error setting JWT: ", error));
+    e.preventDefault();
   };
 
-  const newAccount = (username, email, password) => {
+  const newAccount = (username, email, password, e) => {
     fetch("/user/add", {
-      username: username,
-      email: email,
-      password: password,
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+      }),
     })
       .then((response) => response.json())
       .catch((error) => console.log("Error registering user: ", error));
+    e.preventDefault();
   };
 
   const getUsers = () => {
@@ -36,40 +50,26 @@ function App() {
       .catch((error) => console.log("Error getting users: ", error));
   };
 
-  const saveGrid = () => {
-    if (JWT != "") {
-      fetch("/grid/save", {
-        JWT: JWT,
-        Grid: grid,
-      })
-        .then((response) => response.json())
-        .then((result) => setGrids(result))
-        .catch((error) => console.log("Error saving grid: ", error));
-    }
-  };
-
-  const getGrids = () => {
-    fetch("/grid/retrieveAll")
-      .then((response) => response.json())
-      .then((result) => setGrids(result))
-      .catch((error) => console.log("Error retrieving grids: ", error));
-  };
-
-  const getGrid = (id) => {
-    fetch("/grid/retrieve?id=" + id)
-      .then((response) => response.json())
-      .then((result) => setGrid(result))
-      .catch((error) => console.log("Error retrieving grid: ", error));
-  };
-
   return (
-    <div className="GridContainer">
-      <GridIndex
-        grids={grids}
-        getGrids={getGrids}
-        grid={grid}
-        getGrid={getGrid}
-      />
+    <div class="container">
+      <div className="row">
+        <div className="col-3">
+          <div className="card m-3">
+            <div className="card-body">
+              <Login
+                JWT={JWT}
+                login={login}
+                logout={logout}
+                register={newAccount}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="GridContainer col">
+          <GridIndex JWT={JWT} />
+        </div>
+        <div className="col-3" />
+      </div>
     </div>
   );
 }

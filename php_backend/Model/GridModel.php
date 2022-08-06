@@ -13,7 +13,7 @@ class GridModel extends Database
     }
 
     public function saveGrid($userId, $pattern) {
-        return $this->insert("INSERT INTO `GolombPatterns` (`userId`, `golombPattern`) VALUES($userId, $pattern)", []);
+        return $this->insert("INSERT INTO `GolombPatterns` (`userId`, `golombPattern`) VALUES($userId, '$pattern')", []);
     }
 }
 ?>

@@ -37,7 +37,7 @@ class PlayButton extends Component {
   render() {
     return (
       <div>
-        <button id="playButton" onClick={this.playSynth}>
+        <button className="btn btn-primary" id="playButton" onClick={this.playSynth}>
           Play Song
         </button>
       </div>

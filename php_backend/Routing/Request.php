@@ -48,11 +48,11 @@ class Request implements IRequest
 
     if ($this->requestMethod == "POST")
     {
-
+      $_POST = json_decode(file_get_contents('php://input'), true);
       error_log("---Post Request Params----");
       foreach($_POST as $key => $value)
       {
-        $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+        $body[$key] = $value;
         error_log($key . ": " . $value);
       }
       error_log("--------------------------");

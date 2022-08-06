@@ -66,6 +66,14 @@ class GridController extends BaseController
                             )),
                         array('Content-Type: application/json', 'HTTP/1.1 200 OK')  
                     );
+                } else {
+                    $this->sendOutput(
+                        json_encode(
+                            array(
+                                'Message' => 'Couldn\'t save grid'
+                            )),
+                        array('Content-Type: application/json', 'HTTP/1.1 500 Internal Server Error')
+                    );
                 }
             } else {
                 $this->sendOutput(

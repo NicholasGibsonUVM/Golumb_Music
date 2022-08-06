@@ -20,6 +20,32 @@ class GridContainer extends Component {
     };
   }
 
+  saveGrid = () => {
+    fetch("/grid/save", {
+      method: "POST",
+      body: JSON.stringify({
+        JWT: this.props.JWT,
+        Grid: this.state.gamegrid.map((row) => {
+          return row.map((sqaure) => {
+            return {
+              clickable: sqaure.clickable ? "true" : "false",
+              bgColor: sqaure.bgColor,
+            };
+          });
+        }),
+      }),
+    })
+      .then((response) => response.json())
+      .catch((error) => console.log("Error saving grid: ", error));
+  };
+
+  getGrid = (id) => {
+    fetch("/grid/retrieve?id=" + id)
+      .then((response) => response.json())
+      .then((result) => this.setState({ gamegrid: result.golombPattern }))
+      .catch((error) => console.log("Error retrieving grid: ", error));
+  };
+
   verifyBounds = (num) => {
     var verified = num <= 0 ? 1 : num;
     verified = verified > 64 ? 64 : verified;
@@ -157,9 +183,21 @@ class GridContainer extends Component {
           range={this.state.height}
           length={this.state.width}
         />
+        {this.props.JWT !== "" ? (
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              this.saveGrid();
+            }}
+          >
+            Save Grid
+          </button>
+        ) : (
+          ""
+        )}
       </div>
     );
   }
 }
 
-export default GridContainer
+export default GridContainer;
